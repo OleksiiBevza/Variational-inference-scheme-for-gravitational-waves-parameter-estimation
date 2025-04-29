@@ -68,7 +68,7 @@ parser.add_argument(
 parser.add_argument(
     "--mala-step-size",
     type=float,
-    default=1e-1,
+    default=1e-4,
     help="Step size for the MALA proposal (local sampler)."
 )
 parser.add_argument(
