@@ -299,6 +299,7 @@ class FlowMCExperimentRunner:
         print("Log Prob:", log_prob)
 
 
+
 def main():
     # Get the arguments passed over from the command line, and create the experiment runner
     args = parser.parse_args()
@@ -309,6 +310,7 @@ def main():
     runner.plot_diagnostics()
     runner.print_data()
     runner.plot_corner()
+    
     
 if __name__ == "__main__":
     main()
