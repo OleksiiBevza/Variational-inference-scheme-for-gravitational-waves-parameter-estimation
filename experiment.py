@@ -1,4 +1,4 @@
-"""
+ """
 Code for generating and running toy problems with flowMC
 """
 
@@ -23,6 +23,10 @@ from flowMC.resource.nf_model.rqSpline import MaskedCouplingRQSpline
 from flowMC.resource_strategy_bundle.RQSpline_MALA import RQSpline_MALA_Bundle
 from flowMC.Sampler import Sampler
 
+import arviz as az
+import xarray as xr
+import re
+
 SUPPORTED_EXPERIMENTS = ["gaussian", "dualmoon", "rosenbrock"]
 
 ### The argparse is used to store and process any user input we want to pass on
@@ -46,6 +50,7 @@ parser.add_argument(
     help="The output directory, where things will be stored"
 )
 
+
 # Everything below here are hyperparameters for the flowMC algorithms. 
 parser.add_argument(
     "--n-local-steps",
@@ -68,7 +73,7 @@ parser.add_argument(
 parser.add_argument(
     "--mala-step-size",
     type=float,
-    default=1e-4,
+    default=1e-1,
     help="Step size for the MALA proposal (local sampler)."
 )
 parser.add_argument(
@@ -131,34 +136,35 @@ parser.add_argument(
 )
 
 
+
+
+
 class FlowMCExperimentRunner:
     """
     Base class storing everything shared between different run experiments
     """
     def __init__(self, args):
-        
         # Process the argparse args into params:
         self.params = vars(args)
-        
-        # Check the given outdirectory:
-        if not os.path.exists(self.params["outdir"]):
-            print(f"The output directory {self.params['outdir']} does not exist. Creating it now . . .")
-            os.makedirs(self.params["outdir"])
-        else:
-            print(f"WARNING: The output directory {self.params['outdir']} already exists. This will overwrite any previous data in this directory.")
-        
+
+        # Automatically create a unique output directory: results_1, results_2, ...
+        base_results_dir = self.params["outdir"]
+        unique_outdir = self.get_next_available_outdir(base_results_dir)
+        print(f"Using output directory: {unique_outdir}")
+        os.makedirs(unique_outdir)
+        self.params["outdir"] = unique_outdir
+
         # Check if experiment type is allowed/supported:
         if not self.params["experiment_type"] in SUPPORTED_EXPERIMENTS:
             raise ValueError(f"Experiment type {self.params['experiment_type']} is not supported. Supported types are: {SUPPORTED_EXPERIMENTS}")
-        
+
         # Show the parameters to the screen/log file
         print(f"Passed parameters:")
         for key, value in self.params.items():
             print(f"{key}: {value}")
-            
+
         # Specify the desired target function based on the experiment type
         if self.params["experiment_type"] == "gaussian":
-            # TODO: generalize the target (see below) and print the user specified information here
             print(f"Setting the target function to a Gaussian distribution.")
             self.target_fn = self.target_normal
         elif self.params["experiment_type"] == "dualmoon":
@@ -167,6 +173,16 @@ class FlowMCExperimentRunner:
         elif self.params["experiment_type"] == "rosenbrock":
             print(f"Setting the target function to a Rosenbrock distribution.")
             self.target_fn = self.target_rosenbrock
+
+    def get_next_available_outdir(self, base_dir: str, prefix: str = "results") -> str:
+        if not os.path.exists(base_dir):
+            os.makedirs(base_dir)
+
+        existing = [d for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d))]
+        matches = [re.match(rf"{prefix}_(\d+)", name) for name in existing]
+        numbers = [int(m.group(1)) for m in matches if m]
+        next_number = max(numbers, default=0) + 1
+        return os.path.join(base_dir, f"{prefix}_{next_number}")
 
     def target_normal(self, x, data):
         # TODO: generalize to a general Gaussian distribution
@@ -189,7 +205,7 @@ class FlowMCExperimentRunner:
         dim = self.params["n_dims"]
         rng_key = jax.random.PRNGKey(42)
         rng_key, subkey = jax.random.split(rng_key)
-        
+
         # TODO: generalize the distribution from which the initial samples are generated
         initial_position = jax.random.normal(subkey, shape=(self.params["n_chains"], dim))
 
@@ -221,7 +237,7 @@ class FlowMCExperimentRunner:
             n_max_examples=self.params["n_max_examples"],
             verbose=False
         )
-        
+
         # Define the Sampler
         self.sampler = Sampler(
             dim,
@@ -229,19 +245,67 @@ class FlowMCExperimentRunner:
             rng_key,
             resource_strategy_bundles=bundle,
         )
-        
+
         # Start sampling:
         print(f"Starting the sampling now . . .")
         self.sampler.sample(initial_position, data)
         print(f"Sampling complete!")
-        
+
         return self.sampler
+   
+  
+    def compute_rhat(self, method: str = "rank"):
+        """
+        Compute rank-normalized R-hat diagnostic using ArviZ and save the results as a PDF table.
+
+        Parameters
+        ----------
+        method : str R-hat method to use. Options: 'rank', 'split', 'folded', 'z_scale', 'identity'.
+
+        Returns
+        -------
+        xr.Dataset ArviZ dataset with R-hat values for each dimension.
+        """
+
+        print(f"Computing R-hat diagnostic with method = '{method}'...")
+        chains = np.array(self.sampler.resources["positions_production"].data)
+        n_dims = self.params["n_dims"]
+
+        # dict with key "x" as a (chain, draw, dim) array
+        posterior_dict = {"x": chains}
+        idata = az.from_dict(posterior=posterior_dict)
+
+        # compute R-hat
+        rhat_result = az.rhat(idata, var_names=["x"], method=method)
+        rhat_values = rhat_result["x"].values
+
+        print("R-hat values:")
+        for i, val in enumerate(rhat_values):
+            print(f"x{i}: {val:.4f}")
+
+        # pdf table of the R-hat
+        fig, ax = plt.subplots(figsize=(5, 0.5 + 0.3 * n_dims))
+        table_data = [[f"x{i}", f"{val:.4f}"] for i, val in enumerate(rhat_values)]
+        col_labels = ["Dimension", "R-hat"]
+
+        ax.axis("off")
+        table = ax.table(cellText=table_data, colLabels=col_labels, loc="center", cellLoc="center")
+        table.scale(1, 1.5)
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+
+        save_name = os.path.join(self.params["outdir"], "rhat_table.pdf")
+        print(f"Saving R-hat table to {save_name}")
+        plt.savefig(save_name, bbox_inches="tight")
+        plt.close()
+
+        return rhat_result
 
     def plot_diagnostics(self):
         """
         Make a diagnosis plot. Note: this assumes that the sampler has been run and the data is available, so can only be called after the experiment has been run.
         """
-        
+
         print(f"Making diagnosis plot . . .")
         fig, axes = plt.subplots(1, 3, figsize=(18, 5))
 
@@ -266,7 +330,7 @@ class FlowMCExperimentRunner:
         print(f"Saving diagnosis plots to {save_name}")
         plt.savefig(save_name, bbox_inches = "tight") # best way to save plot is as PDF with bbox_inches = tight
         plt.close(fig)
-        
+
         print(f"Making diagnosis plot . . . DONE!")
 
     def plot_corner(self):
@@ -298,17 +362,78 @@ class FlowMCExperimentRunner:
         print("Global Accs:", global_accs)
         print("Log Prob:", log_prob)
 
+    def plot_loss_curve(self):
+        """
+        Plot the loss curve from the training of the normalizing flow.
+        """
+        print("Plotting loss curve...")
+        loss_data = self.sampler.resources["loss_buffer"].data
+        plt.figure(figsize=(6, 4))
+        plt.plot(loss_data.reshape(-1))
+        plt.xlabel("Training Step")
+        plt.ylabel("Loss")
+        plt.title("Training Loss Curve")
+        save_name = os.path.join(self.params["outdir"], 'training_loss_curve.pdf')
+        print(f"Saving loss curve to {save_name}")
+        plt.savefig(save_name, bbox_inches="tight")
+        plt.close()
+        print("Loss curve plot saved.")
+
+    def plot_rhat_diagnostics(self):
+        """
+        Plot rhat convergence diagnostic for each dimension.
+        """
+        import arviz as az
+
+        print("Computing and plotting R-hat diagnostics...")
+        chains = np.array(self.sampler.resources["positions_production"].data)
+        n_dims = self.params["n_dims"]
+        n_steps = chains.shape[1]
+        n_step_group = 7
+        n_group_step = n_steps // n_step_group
+
+        # Compute R-hat values 
+        rhat_s = np.array(
+            [
+                [
+                    az.rhat(chains[:, : (i + 1) * n_group_step, j], method="rank")
+                    for i in range(n_step_group)
+                ]
+                for j in range(n_dims)
+            ]
+        )
+        iterations = np.linspace(0, n_steps, n_step_group)
+
+        # Plot the R-hat diagnostic
+        plt.figure(figsize=(6, 4))
+        plt.plot(iterations, rhat_s.T, "-o", label=[f"x{i}" for i in range(n_dims)])
+        plt.axhline(1, c="k", ls="--")
+        plt.xlabel("Iteration")
+        plt.ylabel(r"$\hat{R}$")
+        plt.title("R-hat Diagnostic")
+        plt.legend()
+        save_name = os.path.join(self.params["outdir"], 'rhat_diagnostics.pdf')
+        print(f"Saving R-hat diagnostic plot to {save_name}")
+        plt.savefig(save_name, bbox_inches="tight")
+        plt.close()
+        print("R-hat diagnostics plot saved.")
+
+
 
 def main():
     # Get the arguments passed over from the command line, and create the experiment runner
     args = parser.parse_args()
     runner = FlowMCExperimentRunner(args)
-    
+
     # Run the experiment and do some postprocessing
     runner.run_experiment()
     runner.plot_diagnostics()
     runner.print_data()
     runner.plot_corner()
-    
+    runner.plot_loss_curve()
+    runner.plot_rhat_diagnostics()
+    runner.compute_rhat()
+
+
 if __name__ == "__main__":
     main()
