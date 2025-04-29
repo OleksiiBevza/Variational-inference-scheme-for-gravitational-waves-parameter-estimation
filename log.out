@@ -1,0 +1,83 @@
+Tue Apr 29 13:13:16 CEST 2025
+NVIDIA A100-SXM4-40GB
+WARNING:2025-04-29 13:13:17,507:jax._src.xla_bridge:909: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+WARNING: The output directory ./outdir/ already exists. This will overwrite any previous data in this directory.
+Passed parameters:
+experiment_type: gaussian
+n_dims: 2
+outdir: ./outdir/
+n_local_steps: 20
+n_global_steps: 50
+n_training_loops: 20
+mala_step_size: 0.1
+n_production_loops: 20
+n_epochs: 5
+n_chains: 20
+rq_spline_hidden_units: 32
+rq_spline_n_bins: 8
+rq_spline_n_layers: 4
+learning_rate: 0.001
+batch_size: 10000
+n_max_examples: 10000
+show_initial_positions: False
+Setting the target function to a Gaussian distribution.
+Resources or strategies not provided. Using resource strategy bundles.
+Starting the sampling now . . .
+Compiling MALA body
+Compiling training step
+Compiling training step
+Compiling NF proposal kernel
+Updated state target_positions to positions_production
+Updated state target_log_prob to log_prob_production
+Updated state target_local_accs to local_accs_production
+Updated state target_global_accs to global_accs_production
+Updated state training to False
+Sampling complete!
+Making diagnosis plot . . .
+Saving diagnosis plots to ./outdir/acceptance_and_logprob.pdf
+Making diagnosis plot . . . DONE!
+Local Accs: [[  0.   0.   0. ... -inf -inf -inf]
+ [  0.   0.   0. ... -inf -inf -inf]
+ [  0.   0.   0. ... -inf -inf -inf]
+ ...
+ [  0.   0.   0. ... -inf -inf -inf]
+ [  0.   0.   0. ... -inf -inf -inf]
+ [  0.   0.   0. ... -inf -inf -inf]]
+Global Accs: [[-inf -inf -inf ...   1.   1.   1.]
+ [-inf -inf -inf ...   1.   1.   1.]
+ [-inf -inf -inf ...   1.   1.   1.]
+ ...
+ [-inf -inf -inf ...   1.   0.   1.]
+ [-inf -inf -inf ...   1.   1.   1.]
+ [-inf -inf -inf ...   1.   1.   1.]]
+Log Prob: [[-2.7765343  -2.7765343  -2.7765343  ... -0.65915465 -0.01278692
+  -0.60030454]
+ [-0.5171142  -0.5171142  -0.5171142  ... -0.28937805 -0.78203225
+  -1.6575583 ]
+ [-0.9340682  -0.9340682  -0.9340682  ... -1.1466545  -0.21376872
+  -0.3280013 ]
+ ...
+ [-0.19843383 -0.19843383 -0.19843383 ... -1.2530792  -1.2530792
+  -0.12179569]
+ [-1.4383473  -1.4383473  -1.4383473  ... -0.21362917 -0.00334892
+  -0.8707239 ]
+ [-2.09645    -2.09645    -2.09645    ... -2.1025534  -0.1889234
+  -0.22184297]]
+Saving diagnosis plots to ./outdir/chains_corner_plot.pdf
+Saving diagnosis plots to ./outdir/flow_samples_corner_plot.pdf
+JOB DONE
+
+JOB STATISTICS
+==============
+Job ID: 11443479
+Cluster: snellius
+User/Group: twouters2/twouters2
+State: RUNNING
+Nodes: 1
+Cores per node: 18
+CPU Utilized: 00:00:00
+CPU Efficiency: 0.00% of 00:11:24 core-walltime
+Job Wall-clock time: 00:00:38
+Memory Utilized: 0.00 MB
+Memory Efficiency: 0.00% of 20.00 GB (20.00 GB/node)
+WARNING: Efficiency statistics can only be obtained after the job has ended as seff tool is based on the accounting database data.
