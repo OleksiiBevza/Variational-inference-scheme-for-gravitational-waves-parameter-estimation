@@ -1,6 +1,6 @@
-Tue Apr 29 13:11:10 CEST 2025
+Tue Apr 29 13:13:16 CEST 2025
 NVIDIA A100-SXM4-40GB
-WARNING:2025-04-29 13:11:16,613:jax._src.xla_bridge:909: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+WARNING:2025-04-29 13:13:17,507:jax._src.xla_bridge:909: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
 WARNING: The output directory ./outdir/ already exists. This will overwrite any previous data in this directory.
 Passed parameters:
 experiment_type: gaussian
@@ -69,15 +69,15 @@ JOB DONE
 
 JOB STATISTICS
 ==============
-Job ID: 11443438
+Job ID: 11443479
 Cluster: snellius
 User/Group: twouters2/twouters2
 State: RUNNING
 Nodes: 1
 Cores per node: 18
 CPU Utilized: 00:00:00
-CPU Efficiency: 0.00% of 00:12:36 core-walltime
-Job Wall-clock time: 00:00:42
+CPU Efficiency: 0.00% of 00:11:24 core-walltime
+Job Wall-clock time: 00:00:38
 Memory Utilized: 0.00 MB
 Memory Efficiency: 0.00% of 20.00 GB (20.00 GB/node)
 WARNING: Efficiency statistics can only be obtained after the job has ended as seff tool is based on the accounting database data.
