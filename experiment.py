@@ -1,4 +1,4 @@
- """
+"""
 Code for generating and running toy problems with flowMC
 """
 
