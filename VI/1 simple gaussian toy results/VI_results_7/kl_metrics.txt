@@ -1,5 +1,0 @@
-Parametric KL: 0.05265714
-KNN naive KL: 0.08935845
-KNN scipy KL: 0.08935845
-KNN sklearn KL: 0.08935845
-KNN sklearn fast KL: 0.08935845
