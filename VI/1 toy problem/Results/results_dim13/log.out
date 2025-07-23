@@ -1,0 +1,33 @@
+Wed Jul 23 02:17:01 CEST 2025
+NVIDIA H100
+Starting VI training...
+GWAX - getting ready...
+GWAX - JAX jitting...
+GWAX - variational training:   0%|          | 0/10000 [00:00<?, ?it/s]GWAX - variational training:   3%|▎         | 254/10000 [00:00<00:03, 2534.41it/s]GWAX - variational training:   5%|▌         | 510/10000 [00:00<00:03, 2546.41it/s]GWAX - variational training:   8%|▊         | 767/10000 [00:00<00:03, 2552.75it/s]GWAX - variational training:  10%|█         | 1023/10000 [00:00<00:03, 2554.55it/s]GWAX - variational training:  13%|█▎        | 1279/10000 [00:00<00:03, 2555.94it/s]GWAX - variational training:  15%|█▌        | 1535/10000 [00:00<00:03, 2556.84it/s]GWAX - variational training:  18%|█▊        | 1791/10000 [00:00<00:03, 2556.69it/s]GWAX - variational training:  20%|██        | 2047/10000 [00:00<00:03, 2555.71it/s]GWAX - variational training:  23%|██▎       | 2303/10000 [00:00<00:03, 2555.49it/s]GWAX - variational training:  26%|██▌       | 2559/10000 [00:01<00:02, 2556.47it/s]GWAX - variational training:  28%|██▊       | 2815/10000 [00:01<00:02, 2556.61it/s]GWAX - variational training:  31%|███       | 3071/10000 [00:01<00:02, 2555.39it/s]GWAX - variational training:  33%|███▎      | 3328/10000 [00:01<00:02, 2557.00it/s]GWAX - variational training:  36%|███▌      | 3585/10000 [00:01<00:02, 2558.03it/s]GWAX - variational training:  38%|███▊      | 3841/10000 [00:01<00:02, 2557.71it/s]GWAX - variational training:  41%|████      | 4098/10000 [00:01<00:02, 2559.03it/s]GWAX - variational training:  44%|████▎     | 4354/10000 [00:01<00:02, 2557.75it/s]GWAX - variational training:  46%|████▌     | 4610/10000 [00:01<00:02, 2557.29it/s]GWAX - variational training:  49%|████▊     | 4867/10000 [00:01<00:02, 2558.65it/s]GWAX - variational training:  51%|█████     | 5123/10000 [00:02<00:01, 2558.40it/s]GWAX - variational training:  54%|█████▍    | 5379/10000 [00:02<00:01, 2558.84it/s]GWAX - variational training:  56%|█████▋    | 5635/10000 [00:02<00:01, 2556.02it/s]GWAX - variational training:  59%|█████▉    | 5891/10000 [00:02<00:01, 2556.59it/s]GWAX - variational training:  61%|██████▏   | 6147/10000 [00:02<00:01, 2556.97it/s]GWAX - variational training:  64%|██████▍   | 6403/10000 [00:02<00:01, 2556.66it/s]GWAX - variational training:  67%|██████▋   | 6659/10000 [00:02<00:01, 2556.34it/s]GWAX - variational training:  69%|██████▉   | 6915/10000 [00:02<00:01, 2556.77it/s]GWAX - variational training:  72%|███████▏  | 7172/10000 [00:02<00:01, 2557.78it/s]GWAX - variational training:  74%|███████▍  | 7428/10000 [00:02<00:01, 2558.40it/s]GWAX - variational training:  77%|███████▋  | 7685/10000 [00:03<00:00, 2559.48it/s]GWAX - variational training:  79%|███████▉  | 7942/10000 [00:03<00:00, 2561.04it/s]GWAX - variational training:  82%|████████▏ | 8199/10000 [00:03<00:00, 2559.80it/s]GWAX - variational training:  85%|████████▍ | 8456/10000 [00:03<00:00, 2559.94it/s]GWAX - variational training:  87%|████████▋ | 8713/10000 [00:03<00:00, 2560.99it/s]GWAX - variational training:  90%|████████▉ | 8970/10000 [00:03<00:00, 2562.12it/s]GWAX - variational training:  92%|█████████▏| 9227/10000 [00:03<00:00, 2561.89it/s]GWAX - variational training:  95%|█████████▍| 9484/10000 [00:03<00:00, 2562.95it/s]GWAX - variational training:  97%|█████████▋| 9741/10000 [00:03<00:00, 2562.80it/s]GWAX - variational training: 100%|█████████▉| 9998/10000 [00:03<00:00, 2562.26it/s]                                                                                   GWAX - variational training: 100%|██████████| 10000/10000 [00:03<00:00, 2557.34it/s]
+GWAX: Total time = 8.086201667785645 s
+Training finished!
+Runner Summary:
+  dim: 13
+  steps: 10000
+  batch_size: 2000
+Using output directory: results/VI_results_9
+VI samples saved to results/VI_results_9/vi_samples.json
+True samples saved to results/VI_results_9/true_samples.json
+VI loss curve plot saved to results/VI_results_9/vi_loss_curve.png
+Corner plot saved to results/VI_results_9/vi_vs_true_corner.png
+Sample statistics saved to results/VI_results_9/sample_statistics.txt
+JOB DONE
+
+JOB STATISTICS
+==============
+Job ID: 13258574
+Cluster: snellius
+User/Group: obevza/obevza
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 16
+CPU Utilized: 00:01:05
+CPU Efficiency: 5.89% of 00:18:24 core-walltime
+Job Wall-clock time: 00:01:09
+Memory Utilized: 1.44 GB
+Memory Efficiency: 7.18% of 20.00 GB (20.00 GB/node)
