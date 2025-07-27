@@ -1,0 +1,11 @@
+This is pm (mean of VI samples):
+[ 4.1527 -1.9008 -1.6234]
+
+This is pv (variance of VI samples):
+[17.6901 54.6243 15.8351]
+
+This is qm (mean of true samples):
+[ 4.2802 -1.8094 -1.686 ]
+
+This is qv (variance of true samples):
+[15.73   51.7249 11.7571]
