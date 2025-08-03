@@ -4,8 +4,11 @@ The first toy problem concerns a single-component multivariate normal distributi
 The second toy problem concerns a two-component multivariate normal distribution with different means, weights, and covariances, currently explored in 1 to 4 dimensions. The complexity of these toy problems will be increased in the near future.
 
 The inspection of the results includes:
+
 (i) Visual inspection of the true and VI distributions.
+
 (ii) Comparison of the means, variances, and standard deviations of the true and VI distributions.
+
 (iii) Examination of the parametric and nonparametric KL divergences between the true and VI distributions.
 
 
