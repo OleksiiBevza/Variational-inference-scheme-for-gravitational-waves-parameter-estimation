@@ -10,6 +10,6 @@ The inspection of the results includes:
 
 (iii) Examination of the parametric and nonparametric KL divergences between the true and VI distributions.
 
-
+The full text of my master’s thesis can be found in the file Master_thesis.pdf.
 
 To run the script on Snellius, run `sbatch submit_job.sh`
